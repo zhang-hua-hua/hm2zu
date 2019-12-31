@@ -72,7 +72,7 @@
                 ></quill-editor>
             </el-form-item>
             <template v-if="formData.questionType!=='3'">
-                <el-form-item label="选项(以下选中的选项为正确答案)"></el-form-item>
+                <div style="margin-bottom: 10px">选项(以下选中的选项为正确答案)</div>
                 <el-form-item v-for="(item,index) in formData.options" :key="index">
                     <!-- 单选 -->
                     <el-radio
