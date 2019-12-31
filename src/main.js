@@ -13,14 +13,7 @@ import * as filters from './filters' // global filters
 import './mock' // simulation data
 // font-awesome
 import 'font-awesome/css/font-awesome.css'
-//富文本编辑器
-import VueQuillEditor from 'vue-quill-editor';
 
-import 'quill/dist/quill.core.css'
-
-import 'quill/dist/quill.snow.css'
-
-import 'quill/dist/quill.bubble.css'
 
 /*
  * 注册 - 业务模块
@@ -42,7 +35,6 @@ Vue.use(hmmm, store)
 /*
  * 注册 - 组件
  */
-Vue.use('quill-editor', VueQuillEditor)
 // 饿了么
 Vue.use(Element, {
   size: 'medium', // set element-ui default size

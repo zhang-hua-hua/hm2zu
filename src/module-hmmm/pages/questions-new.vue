@@ -1,4 +1,4 @@
-<!--为了压缩 注释拿了-->
+<!--参考老师 继续优化-->
 <template>
     <el-card>
         <el-form
@@ -81,7 +81,6 @@
                             :label="1"
                             v-model="item.isRight"
                     >{{item.code }}</el-radio>
-                    <!-- 多选 -->
                     <el-checkbox
                             v-else-if="formData.questionType === '2'"
                             :true-label="1"
@@ -127,7 +126,6 @@
     import { simple as TagList } from "../../api/hmmm/tags";
     import { difficulty, questionType, direction } from "../../api/hmmm/constants";
     import { simple as subjectList } from "../../api/hmmm/subjects";
-    import { simple as UserList } from "../../api/base/users";
     import { simple as directioy } from "../../api/hmmm/directorys";
     import { citys, provinces } from "../../api/hmmm/citys";
     import { quillEditor } from "vue-quill-editor";
@@ -199,7 +197,6 @@
                 });
                 console.log(options);
             },
-            // 添加选项
             addItem() {
                 this.formData.options.push({
                     code: this.getRightLetter(this.formData.options.length),
@@ -208,10 +205,9 @@
                     img: ""
                 });
             },
-            // 删除选项
             async delItem(index) {
                 await this.$confirm("是否删除此选项?");
-                this.formData.options.splice(index, 1); // 移除一个选项
+                this.formData.options.splice(index, 1);
             },
             getRightLetter(index) {
                 return this.dic.split("")[index].toUpperCase();
@@ -219,13 +215,12 @@
             clear() {
                 this.$refs.myForm.resetFields();
             },
-            // 提交表单
             async submit() {
                 await this.$refs.myForm.validate();
                 let { id } = this.$route.query;
                 id ? await update(this.formData) : await addQuestion(this.formData);
 
-                this.$router.push("/questions/list"); // 回到列表
+                this.$router.push("/questions/list");
             },
             async getSubject() {
                 let result = await subjectList();
@@ -240,7 +235,7 @@
                 this.directioy = result.data;
             },
             async getCompanys() {
-                let result = await companys(); // 获取企业
+                let result = await companys();
                 this.companys = result.data.items;
             },
             async getDetail(id) {
@@ -259,4 +254,6 @@
     };
 </script>
 
-<style lang="scss"></style>
+<style scoped>
+
+</style>
