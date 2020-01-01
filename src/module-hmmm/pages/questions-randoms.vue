@@ -6,7 +6,7 @@
       border
       style="width: 100%">
       <el-table-column
-        :prop="id"
+        prop="id"
         label="序号"
         width="60px"
         >
@@ -47,20 +47,35 @@
         >
       </el-table-column>
       <el-table-column
-        prop="address"
         label="操作">
+        <el-button size='small' type="text">删除</el-button>
       </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
+import {randoms} from '../../api/hmmm/questions'
+import { log } from 'util'
 export default {
   name: 'QuestionsRandoms',
   data() {
     return {
-      list:[]
+      list:[],
+      result:{}
     }
+  },
+  methods:{
+    getListOfGroupQuestions(){
+      randoms().then(res=>{
+        console.log(res);
+        
+        this.list=res.data.items
+      })
+    }
+  },
+  created(){
+    this.getListOfGroupQuestions()
   }
 }
 </script>
