@@ -38,8 +38,8 @@
       prop="questionType"
       label="操作"
        width="120">
-       <template slot-scope="scope">
-        <el-button @click="handleClick(scope.row)" type="text" size="small">删除</el-button>
+       <template slot-scope="obj">
+        <el-button @click="remove({'id':obj.row.id})" type="text" size="small">删除</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import {randoms} from '../../api/hmmm/questions.js'
+import {randoms,remove} from '../../api/hmmm/questions.js'
  export default {
       data() {
         return {
@@ -70,6 +70,16 @@ import {randoms} from '../../api/hmmm/questions.js'
         }
       },
       methods:{
+        // 删除方法
+        remove(id){
+          this.$confirm('是否要删除该文章').then(res=>{
+            remove(id).then(res=>{
+                this.$message({ message: '删除成功',type: 'success'});
+            })
+              
+            // 调取删除接口
+          })
+        },
         //页码改变事件
         changePage(newPage){
           this.page.currentPage=newPage;
