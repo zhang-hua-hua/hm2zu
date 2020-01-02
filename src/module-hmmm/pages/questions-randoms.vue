@@ -4,7 +4,7 @@
    <el-table
       :data="list"
       border
-      
+     
       style="width: 100%">
       <el-table-column
         prop="numberid"
@@ -49,9 +49,11 @@
         >
       </el-table-column>
       <el-table-column
-      prop="id"
         label="操作">
-        <el-button @click="delQuestions({'id':510000197405202172})" size='small' type="text">删除</el-button>
+        <template slot-scope="obj">
+          <el-button @click="delQuestions({'id':obj.row.id})" size='small' type="text">删除</el-button>
+        </template>
+        
       </el-table-column>
     </el-table>
     <el-row type='flex' justify='center' align="middle" style="height:80px">
@@ -88,22 +90,25 @@ export default {
   },
   methods:{ 
     pagechange (newpage) {
+      console.log(newpage);
       this.page.currentPage = newpage
       this.getListOfGroupQuestions()
     },
     delQuestions(id){
-      // console.log(id)
-      removeRandoms(id).then(res=>{
-      
+      console.log(id)
+      this.$confirm('确定删除数据').then(res=>{
+        removeRandoms(id).then(res=>{
+        this.$message({ type: "success", message: "删除成功" });
          this.getListOfGroupQuestions()
-         
       })
+      })
+      
     },
     getListOfGroupQuestions(){
       // console.log(11)
       randoms({page:this.page.currentPage,pagesize:this.page.pageSize}).then(res=>{
-        // console.log(res);
-        this.page.total=res.data.pages
+        console.log(res);
+        this.page.total=res.data.counts
         this.toatals=res.data.counts
         this.list=res.data.items.map((item,index)=>{
           // this.numberid=item.id
@@ -115,7 +120,8 @@ export default {
          return item
         })
         // console.log(this.list);
-        
+        // console.log(this.page.total);
+        //  console.log(this.page);
       })
     }
   },
