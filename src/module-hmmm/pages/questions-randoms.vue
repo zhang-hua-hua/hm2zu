@@ -1,4 +1,5 @@
 <template>
+<div>
   <el-table
     :data="list"
     border
@@ -6,7 +7,7 @@
     <el-table-column
       prop="id"
       label="序号"
-      width="180">
+      width="100">
     </el-table-column>
     <el-table-column
       prop="addTime"
@@ -22,7 +23,7 @@
       label="试题ID">
     </el-table-column>
      <el-table-column
-      prop=" progressOfAnswer"
+      prop="progressOfAnswer"
       label=答题进度>
     </el-table-column>
      <el-table-column
@@ -35,9 +36,24 @@
     </el-table-column>
      <el-table-column
       prop="questionType"
-      label="操作">
+      label="操作"
+       width="120">
+       <template slot-scope="scope">
+        <el-button @click="handleClick(scope.row)" type="text" size="small">删除</el-button>
+      </template>
     </el-table-column>
   </el-table>
+  <!-- 分页 -->
+  <el-row type='flex' justify="center" style="height:80px">
+    <!-- total 总页码   :page-size每页多少条 -->
+   <el-pagination background layout="prev, pager, next" 
+   :total="page.total"
+   :page-size="page.pageSize"
+   :current-page="page.currentPage"
+   @current-change="changePage"
+   ></el-pagination>
+  </el-row>
+  </div>
 </template>
 
 <script>
@@ -45,14 +61,29 @@ import {randoms} from '../../api/hmmm/questions.js'
  export default {
       data() {
         return {
-          list:[]//等一个个数据接收返回结果
+          list:[],//等一个个数据接收返回结果
+          page:{
+            total:0,//总页数
+            pageSize:10,//默认每页条
+            currentPage:1 //默认页码为1
+          }//专门存放分页信息数据
         }
       },
       methods:{
+        //页码改变事件
+        changePage(newPage){
+          this.page.currentPage=newPage;
+          this.aA()
+        },
          aA(){
-            randoms().then(res=>{
-              this.list=res.data.items
-                 console.log(res)
+            randoms().then(res=>{   
+              // this.list=res.data.items
+                 console.log(res);
+                 this.page.total=res.data.counts;
+                 this.list=res.data.items.map((element,index) => {
+                    element.id=index+1
+                     return element
+                 });
             })
          }
       },
