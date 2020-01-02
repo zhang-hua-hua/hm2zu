@@ -1,18 +1,18 @@
 <template>
       <el-card>
           <!-- 面包屑 -->
-        <bread-crumb slot="header">
+        <el-row slot="header">
           <el-button type="primary">新增学科</el-button>
-        </bread-crumb>
+        </el-row>
 
         <!-- 搜索表单 -->
         <el-form inline>
           <el-form-item label="学科名称">
-            <el-input></el-input>
+            <el-input v-model="searchForm.subjectName"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button class="formButton">清除</el-button>
-            <el-button type="primary">搜索</el-button>
+            <el-button @click="clear">清除</el-button>
+            <el-button @click="search" type="primary">搜索</el-button>
           </el-form-item>
         </el-form>
 
@@ -44,10 +44,12 @@
             <el-table-column prop="twoLevelDirectory" label="题目数量" align="center"></el-table-column>
 
             <el-table-column label="操作" width="220" align="center">
-              <el-button size="small" type="text">学科分类</el-button>
-              <el-button size="small" type="text">学科修改</el-button>
-              <el-button size="small" type="text">修改</el-button>
-              <el-button size="small" type="text">删除</el-button>
+              <template slot-scope="obj">
+                <el-button size="small" type="text">学科分类</el-button>
+                <el-button size="small" type="text">学科标签</el-button>
+                <el-button size="small" type="text">修改</el-button>
+                <el-button @click="delItem(obj.row.id)" size="small" type="text">删除</el-button>
+              </template>
             </el-table-column>
           </el-table>
         </el-row>
@@ -67,11 +69,12 @@
 </template>
 
 <script>
-import { list } from '../../api/hmmm/subjects'
+import { list , remove } from '../../api/hmmm/subjects'
 export default {
   // name: 'SubjectsList',
   data() {
     return {
+      searchForm:{ subjectName:"" }, // 搜索条件
       list:[], //接受详细数据
       page:{
         currentPage:1, //当前页数
@@ -81,16 +84,34 @@ export default {
     }
   },
   methods:{
+    //点击删除
+    async delItem(id){
+      await this.$confirm("您是否确定删除此数据?");
+      //确定删除
+      await remove({ id });
+      this.$message({ type: "success", message: "删除成功" });
+      this.getSubjects(this.searchForm)
+    },
+    //搜索按钮
+    search(){
+      this.page.currentPage = 1
+      this.getSubjects(this.searchForm)
+    },
+    //清除按钮
+    clear(){
+      this.searchForm.subjectName=''
+    },
     //点击分页
     changePage(newPage){
       this.page.currentPage=newPage;
       this.getSubjects()
     },
     //获取列表数据
-   async getSubjects(){
+   async getSubjects(data){
      let result= await list({
        page: this.page.currentPage,
        pagesize: this.page.pageSize,
+       ...data
      });
      this.list=result.data.items; // 列表数据
      this.page.total=result.data.counts; // 总条数
