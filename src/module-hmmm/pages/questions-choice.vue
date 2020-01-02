@@ -6,7 +6,7 @@
       <el-button type="primary">批量导入</el-button>
     </el-card>
     <el-card class="banner">
-      <el-form>
+      <el-form :inline="true" >
         <el-form-item class="el-form-item" label="学科" >
           <el-select placeholder="请选择" value="">
             <el-option label="区域一" value="shangh"></el-option>
@@ -32,20 +32,14 @@
             <el-option label="区域一" value="shanghai"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="el-form-item" label="关键字">
-          <el-select placeholder="请选择" value="">
-            <el-option label="区域一" value="shanghai"></el-option>
-          </el-select>
+        <el-form-item  class="el-form-item" label="关键字">
+            <el-input style="width: 223px"></el-input>
         </el-form-item>
-        <el-form-item class="el-form-item" label="题目备注">
-          <el-select placeholder="请选择" value="">
-            <el-option label="区域一" value="shanghai"></el-option>
-          </el-select>
+        <el-form-item  class="el-form-item" label="题目备注">
+            <el-input style="width: 223px"></el-input>
         </el-form-item>
-        <el-form-item class="el-form-item" label="企业简称">
-          <el-select placeholder="请选择" value="">
-            <el-option label="区域一" value="shanghai"></el-option>
-          </el-select>
+         <el-form-item  class="el-form-item" label="企业简称">
+            <el-input style="width: 223px"></el-input>
         </el-form-item>
         <el-form-item class="el-form-item" label="录入人">
           <el-select placeholder="请选择" value="">
@@ -77,13 +71,13 @@
           <el-button type="primary">搜索</el-button>
         </el-row>
         <el-row>
-          <el-radio-group v-model="radio1">
-      <el-radio-button label="上海"></el-radio-button>
-      <el-radio-button label="北京"></el-radio-button>
-      <el-radio-button label="广州"></el-radio-button>
-    </el-radio-group>
+              <el-radio-group v-model="radio1">
+                <el-radio-button label="上海"></el-radio-button>
+                <el-radio-button label="北京"></el-radio-button>
+                <el-radio-button label="广州"></el-radio-button>
+              </el-radio-group>
         </el-row>
-        <el-table  style="width: 100%" height="250">
+        <el-table  :data="tableData" style="width: 100%" height="250">
           <el-table-column fixed prop="date" label="序号" ></el-table-column>
           <el-table-column prop="name" label="试题编号" ></el-table-column>
           <el-table-column prop="province" label="学科" ></el-table-column>
@@ -96,7 +90,14 @@
           <el-table-column prop="zip" label="审核意见" ></el-table-column>
           <el-table-column prop="zip" label="审核人" ></el-table-column>
           <el-table-column prop="zip" label="发布状态" ></el-table-column>
+          
         </el-table>
+        <el-pagination
+  background
+  layout="prev, pager, next"
+  :total="1000">
+</el-pagination>
+
       </el-form>
     </el-card>
   </div>
@@ -107,10 +108,18 @@ export default {
   name: "QuestionsChoice",
   data() {
     return {
-      radio1:'shangh'
+      radio1:'shangh',
+         tableData: [{
+          date: '2016-05-03',
+          name: '王小虎',
+          province: '上海',
+          city: '普陀区',
+          address: '上海市普陀区金沙江路 1518 弄',
+          zip: 200333
+        }]
     };
   }
-};
+}
 </script>
 
 <style scoped lang="scss">
