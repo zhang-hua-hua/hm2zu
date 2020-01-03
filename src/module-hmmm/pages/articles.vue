@@ -1,7 +1,27 @@
 <template>
   <el-card class="dashboard-container" style="margin-right:100px">
     <div class="app-container">
-    <el-button size="small" @click="$router.push({name:'articles-add'})">新增技巧</el-button>
+    <el-button size="small" @click="dialogVisible=true">新增技巧</el-button>
+       <el-dialog :visible.sync="dialogVisible" :show-close="false" width="60%">
+          <el-card>
+              <el-form label-width="80px" :model="editForm" :rules="rules" ref="myForm">
+                  <el-form-item label="标题" prop="title">
+                    <el-input v-model="editForm.title"></el-input>
+                  </el-form-item>
+                  <el-form-item prop="articleBody">
+                     <quill-editor style="height:200px;margin-bottom:90px"  v-model="editForm.articleBody">
+                     </quill-editor>
+                  </el-form-item>
+                  <el-form-item label="视频地址">
+                    <el-input  v-model="editForm.videoURL"></el-input>
+                  </el-form-item>
+              </el-form>
+          </el-card>
+         <span slot="footer" class="dialog-footer">
+           <el-button @click="resetForm">取 消</el-button>
+           <el-button type="primary" @click="submitForm">确 定</el-button>
+         </span>
+       </el-dialog>
     </div>
     <el-form inline>
       <el-form-item label="关键字 :">
@@ -44,11 +64,25 @@
 </template>
 
 <script>
-import { list , state as changeState,remove} from "../../api/hmmm/articles"
+import { list ,
+         state as changeState,
+         remove,
+         add as editAdd} from "../../api/hmmm/articles"
+
 export default {
   name: 'ArticlesList',
   data() {
     return {
+      editForm:{
+        title:'', //标题
+        articleBody:'',//正文
+        videoURL:'' //视频地址
+      },
+      rules:{
+        title:[{ required: true, message: '请输入标题名称', trigger: 'blur' }],
+        articleBody:[{ required: true, message: '请输入正文内容', trigger: 'blur' }],
+        videoURL:[{ required: true, message: '请输入视频地址', trigger: 'blur' }],
+      },
       list:[],
       page: {
         total: 0, // 总页数
@@ -58,10 +92,30 @@ export default {
       //搜索对象
       searchForm:{
          keyword:''
-      }
+      },
+      //弹层
+      dialogVisible: false //默认关闭
     }
   },
   methods:{
+    //取消重置
+    resetForm(){
+      this.dialogVisible=false
+      this.$refs.myForm.resetFields()
+    },
+    //手动校验
+     async submitForm(){
+       await this.$refs.myForm.validate();
+      //  await editAdd();
+      //   this.$message({ type: "success", message: "发布成功" });
+      //   this.getlist(this.editForm);
+      //   this.editForm={
+      //     title:'', //标题
+      //     articleBody:'',//正文
+      //     videoURL:'' //视频地址
+      //   };
+      //   this.dialogVisible = false    
+    },
     //搜索
     search(){
       this.page.currentPage=1

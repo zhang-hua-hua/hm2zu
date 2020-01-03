@@ -22,6 +22,13 @@ import base from '@/module-manage/' // 用户管理
 // import form from '@/module-form/' // 表单页
 // import details from '@/module-details/' // 表单页
 import hmmm from '@/module-hmmm/' // 黑马面面
+//富文本编辑器
+import  VueQuillEditor from 'vue-quill-editor'
+// require styles 引入样式
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+Vue.use(VueQuillEditor)
 
 Vue.use(dashboard, store)
 Vue.use(base, store)
