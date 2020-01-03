@@ -45,8 +45,8 @@
 
             <el-table-column label="操作" width="220" align="center">
               <template slot-scope="obj">
-                <el-button size="small" type="text">学科分类</el-button>
-                <el-button size="small" type="text">学科标签</el-button>
+                <el-button @click="toDirectorys" size="small" type="text">学科分类</el-button>
+                <el-button @click="toTags" size="small" type="text">学科标签</el-button>
                 <el-button @click="changeForm(obj.row.id)" size="small" type="text">修改</el-button>
                 <el-button @click="delItem(obj.row.id)" size="small" type="text">删除</el-button>
               </template>
@@ -108,6 +108,14 @@ export default {
     }
   },
   methods:{
+    //跳转到标签页面
+    toTags(){
+      this.$router.push('tags')
+    },
+    //跳转到标签页面
+    toDirectorys(){
+      this.$router.push('directorys')
+    },
     //点击修改
     async changeForm(id){
       let result = await detail({id});
