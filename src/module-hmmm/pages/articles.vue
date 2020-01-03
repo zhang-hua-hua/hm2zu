@@ -106,15 +106,15 @@ export default {
     //手动校验
      async submitForm(){
        await this.$refs.myForm.validate();
-      //  await editAdd();
-      //   this.$message({ type: "success", message: "发布成功" });
-      //   this.getlist(this.editForm);
-      //   this.editForm={
-      //     title:'', //标题
-      //     articleBody:'',//正文
-      //     videoURL:'' //视频地址
-      //   };
-      //   this.dialogVisible = false    
+       await editAdd(this.editForm);
+        this.$message({ type: "success", message: "发布成功" });
+        this.getlist();
+        this.editForm={
+          title:'', //标题
+          articleBody:'',//正文
+          videoURL:'' //视频地址
+        };
+        this.dialogVisible = false    
     },
     //搜索
     search(){
