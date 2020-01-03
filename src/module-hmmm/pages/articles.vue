@@ -44,8 +44,8 @@
         <template slot-scope="obj">
           <el-button size="small" type="text">预览</el-button>
           <el-button size="small" type="text" @click="delItem(obj.row.id)">删除</el-button>
-          <el-button size="small" type="text">修改</el-button>
-          <el-button size="small" type="text" @click="changeState(obj.row)">{{obj.row.state===1 ? "禁用" : "启用"}}</el-button>
+          <el-button size="small" type="text" @click="modify(obj.row.id)">修改</el-button>
+          <el-button size="small" type="text" @click="changestate(obj.row)">{{obj.row.state===1 ? "禁用" : "启用"}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -56,7 +56,8 @@
                  :page-sizes="[10, 20, 30, 40]"
                  :page-size="page.pageSize"
                  layout="prev, pager, next, sizes, jumper"
-                 :total="page.total">
+                 :total="page.total"
+                 @current-change="changePage">
              </el-pagination>
          </div>
     </el-row>
@@ -67,7 +68,9 @@
 import { list ,
          state as changeState,
          remove,
-         add as editAdd} from "../../api/hmmm/articles"
+         add as editAdd,
+         update as editUpdata,
+         detail as editDetail} from "../../api/hmmm/articles"
 
 export default {
   name: 'ArticlesList',
@@ -98,6 +101,23 @@ export default {
     }
   },
   methods:{
+    //分页 
+    changePage(newPage){
+        this.page.currentPage=newPage
+        this.getlist(this.editForm)
+    },
+    //修改列表 两种方案
+    //方案一 @click="modify(obj.row)"
+    // modify(row){
+    //     this.editForm=row,
+    //     this.dialogVisible=true
+    // },
+    //方案2
+    async modify(id){
+      let result = await  editDetail({id})
+      this.editForm=result.data,
+      this.dialogVisible=true
+    },
     //取消重置
     resetForm(){
       this.dialogVisible=false
@@ -106,7 +126,7 @@ export default {
     //手动校验
      async submitForm(){
        await this.$refs.myForm.validate();
-       await editAdd(this.editForm);
+       this.editForm.id ? await editUpdata(this.editForm) : await editAdd(this.editForm);
         this.$message({ type: "success", message: "发布成功" });
         this.getlist();
         this.editForm={
@@ -124,7 +144,7 @@ export default {
     //清除
     clear(){
       this.searchForm={
-        input:''
+         keyword:''
       }
     },
     //删除
@@ -135,9 +155,11 @@ export default {
       this.getlist(this.searchForm); // 应该带状态查询
     },
     //改变状态方式
-     async changeState(row){
+     async changestate(row){
        await this.$confirm('确定要改变状态吗?')
-       await changeState({id: row.id, state: row.state===1 ? "0" : "1"})
+       console.log(row);
+       
+       await changeState({'id': row.id, 'state': row.state===1 ? 0 : 1})
        this.$message({ type: "success", message: "改变状态成功" })
        this.getlist(this.searchForm); // 应该带状态查询
       },
