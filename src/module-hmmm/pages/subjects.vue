@@ -1,8 +1,8 @@
 <template>
       <el-card>
-          <!-- 面包屑 -->
+          <!-- 新增学科 -->
         <el-row slot="header">
-          <el-button type="primary">新增学科</el-button>
+          <el-button type="primary" @click="subjectVisible">新增学科</el-button>
         </el-row>
 
         <!-- 搜索表单 -->
@@ -47,7 +47,7 @@
               <template slot-scope="obj">
                 <el-button size="small" type="text">学科分类</el-button>
                 <el-button size="small" type="text">学科标签</el-button>
-                <el-button size="small" type="text">修改</el-button>
+                <el-button @click="changeForm(obj.row.id)" size="small" type="text">修改</el-button>
                 <el-button @click="delItem(obj.row.id)" size="small" type="text">删除</el-button>
               </template>
             </el-table-column>
@@ -65,15 +65,39 @@
             @current-change="changePage">
           </el-pagination>
         </el-row>
+
+        <!-- 新增和修改信息弹窗 -->
+        <el-dialog :show-close="false" :visible="dialogVisible">
+          <el-form :model="formData"  label-width="150px" ref="myForm" :rules="rules">
+            <!-- 新增或修改内容 -->
+            <el-form-item label="学科名称" prop="subjectName">
+              <el-input v-model="formData.subjectName"></el-input>
+            </el-form-item>
+            <!-- 显示开关 -->
+            <el-form-item label="是否前台显示" prop="isFrontDisplay">
+              <el-switch v-model="formData.isFrontDisplay">
+
+              </el-switch>              
+            </el-form-item>
+          </el-form>
+          <el-row slot="footer" type="flex" justify="end">
+            <el-button type="primary" @click="addForm">确定</el-button>
+            <el-button @click="btnCancel">取消</el-button>
+          </el-row>
+        </el-dialog>
+
       </el-card>
 </template>
 
 <script>
-import { list , remove } from '../../api/hmmm/subjects'
+import { list , remove , add , detail , update } from '../../api/hmmm/subjects'
 export default {
   // name: 'SubjectsList',
   data() {
     return {
+      formData:{ subjectName:"" ,isFrontDisplay:true}, // 添加条件
+      rules:{subjectName:[{required: true, message: "学科名称不能为空", trigger: "blur"}]},
+      dialogVisible:false, //控制弹窗显示
       searchForm:{ subjectName:"" }, // 搜索条件
       list:[], //接受详细数据
       page:{
@@ -84,6 +108,38 @@ export default {
     }
   },
   methods:{
+    //点击修改
+    async changeForm(id){
+      let result = await detail({id});
+      console.log(result.data);
+      this.formData=result.data
+      this.formData.isFrontDisplay===1 ? this.formData.isFrontDisplay=true : this.formData.isFrontDisplay=false
+      this.dialogVisible=true
+    },
+    //点击显示弹窗
+    subjectVisible(){
+      this.dialogVisible=true
+    },
+    // 点击确定增加
+    async addForm(){
+      await this.$refs.myForm.validate();
+      this.formData.id ? await update(this.formData) : await  add(this.formData)
+      this.formData={ 
+        subjectName:"" ,
+        isFrontDisplay:true
+        }
+      this.dialogVisible=false;
+      this.$message({ type: "success", message: "添加成功" });
+      this.getSubjects(this.searchForm)
+    },
+    // 点击取消
+    btnCancel(){
+      this.formData={ 
+        subjectName:"" ,
+        isFrontDisplay:true
+        }
+      this.dialogVisible=false;
+    },
     //点击删除
     async delItem(id){
       await this.$confirm("您是否确定删除此数据?");
